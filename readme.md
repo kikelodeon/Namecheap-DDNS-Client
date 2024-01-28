@@ -32,7 +32,7 @@ This application is designed to update the dynamic IP address associated with yo
 ## Usage
 
 ```bash
-DDNSUpdater C:\\Path\\To\\ConfigFolder
+NameCheapDDNSClient C:\\Path\\To\\ConfigFolder
 ```
 ### Options
 
