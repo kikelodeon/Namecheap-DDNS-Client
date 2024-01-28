@@ -2,5 +2,5 @@
 ###################
 NameCheapDDNSClient/bin/*
 NameCheapDDNSClient/obj/*
-NameCheapDDNSClient/obj/net8.0
+NameCheapDDNSClient/obj/net8.0/*
 NameCheapDDNSClient/AppData/*
