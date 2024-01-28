@@ -1,0 +1,7 @@
+{
+    "Host": "your-host",
+    "Domain": "your-domain",
+    "Password": "your-password", 
+    "TTL": 30
+}
+  

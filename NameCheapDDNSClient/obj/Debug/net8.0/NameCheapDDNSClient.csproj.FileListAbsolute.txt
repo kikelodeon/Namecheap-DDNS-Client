@@ -1,0 +1,14 @@
+C:\Users\Kikelo\Documents\GitHub\NameCheapDDNS\NameCheapDDNSClient\bin\Debug\net8.0\NameCheapDDNSClient.exe
+C:\Users\Kikelo\Documents\GitHub\NameCheapDDNS\NameCheapDDNSClient\bin\Debug\net8.0\NameCheapDDNSClient.deps.json
+C:\Users\Kikelo\Documents\GitHub\NameCheapDDNS\NameCheapDDNSClient\bin\Debug\net8.0\NameCheapDDNSClient.runtimeconfig.json
+C:\Users\Kikelo\Documents\GitHub\NameCheapDDNS\NameCheapDDNSClient\bin\Debug\net8.0\NameCheapDDNSClient.dll
+C:\Users\Kikelo\Documents\GitHub\NameCheapDDNS\NameCheapDDNSClient\bin\Debug\net8.0\NameCheapDDNSClient.pdb
+C:\Users\Kikelo\Documents\GitHub\NameCheapDDNS\NameCheapDDNSClient\obj\Debug\net8.0\NameCheapDDNSClient.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Kikelo\Documents\GitHub\NameCheapDDNS\NameCheapDDNSClient\obj\Debug\net8.0\NameCheapDDNSClient.AssemblyInfoInputs.cache
+C:\Users\Kikelo\Documents\GitHub\NameCheapDDNS\NameCheapDDNSClient\obj\Debug\net8.0\NameCheapDDNSClient.AssemblyInfo.cs
+C:\Users\Kikelo\Documents\GitHub\NameCheapDDNS\NameCheapDDNSClient\obj\Debug\net8.0\NameCheapDDNSClient.csproj.CoreCompileInputs.cache
+C:\Users\Kikelo\Documents\GitHub\NameCheapDDNS\NameCheapDDNSClient\obj\Debug\net8.0\NameCheapDDNSClient.dll
+C:\Users\Kikelo\Documents\GitHub\NameCheapDDNS\NameCheapDDNSClient\obj\Debug\net8.0\refint\NameCheapDDNSClient.dll
+C:\Users\Kikelo\Documents\GitHub\NameCheapDDNS\NameCheapDDNSClient\obj\Debug\net8.0\NameCheapDDNSClient.pdb
+C:\Users\Kikelo\Documents\GitHub\NameCheapDDNS\NameCheapDDNSClient\obj\Debug\net8.0\NameCheapDDNSClient.genruntimeconfig.cache
+C:\Users\Kikelo\Documents\GitHub\NameCheapDDNS\NameCheapDDNSClient\obj\Debug\net8.0\ref\NameCheapDDNSClient.dll
