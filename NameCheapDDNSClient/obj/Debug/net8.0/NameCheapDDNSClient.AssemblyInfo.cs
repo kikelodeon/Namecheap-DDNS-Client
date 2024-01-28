@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NameCheapDDNSClient")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+357009111f79d9a3f6abb481616bb3339dee58e9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+423eac8e7f40b61e7b4082f18b7f8fb6d6247854")]
 [assembly: System.Reflection.AssemblyProductAttribute("NameCheapDDNSClient")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NameCheapDDNSClient")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

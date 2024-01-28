@@ -1,5 +1,5 @@
 # Ignored folders
 ###################
-bin/
-obj/
-AppData/
+NameCheapDDNSClient/bin/
+NameCheapDDNSClient/obj/
+NameCheapDDNSClient/AppData/
