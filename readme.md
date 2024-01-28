@@ -26,7 +26,7 @@ This application is designed to update the dynamic IP address associated with yo
 
 ## Installation
 
-1. Clone the repository: \`git clone https://github.com/yourusername/Namecheap-DDNSUpdater.git\`
+1. Clone the repository: `git clone https://github.com/kikelodeon/Namecheap-DDNSUpdater.git`
 2. Build the solution using Visual Studio or your preferred build tool.
 
 ## Usage
