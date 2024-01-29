@@ -8,8 +8,6 @@ This application is designed to update the dynamic IP address associated with yo
 
 ## Features
 
-## Features
-
 - **Multiple IP Detection Providers:** 🔄 The application supports various IP detection providers, ensuring robustness in case one is temporarily unavailable. It automatically switches to an alternative provider among the options (you can easily add more as needed). This feature enhances reliability and flexibility in obtaining accurate IP address information.
 
 - **Automated Dynamic IP Address Update:** 🚀 Automatically updates the dynamic IP address associated with your Namecheap domains, ensuring your domains always point to the correct IP address.
