@@ -8,21 +8,24 @@ This application is designed to update the dynamic IP address associated with yo
 
 ## Features
 
-- **Multiple IP Detection Providers:** The application supports multiple IP detection providers, ensuring robustness in case one provider is temporarily unavailable. It automatically switches to another provider among the three available options (you can easily add more as needed). This feature enhances reliability and flexibility in obtaining accurate IP address information.
+## Features
 
-- **Automated Dynamic IP Address Update:** Automatically updates the dynamic IP address associated with your Namecheap domains, ensuring your domains always point to the correct IP address.
+- **Multiple IP Detection Providers:** 🔄 The application supports various IP detection providers, ensuring robustness in case one is temporarily unavailable. It automatically switches to an alternative provider among the options (you can easily add more as needed). This feature enhances reliability and flexibility in obtaining accurate IP address information.
 
-- **Support for Multiple Hosts and Domains:** Handle multiple hosts and domains within a single process. Manage and update the dynamic IP addresses for various hosts and domains effortlessly.
+- **Automated Dynamic IP Address Update:** 🚀 Automatically updates the dynamic IP address associated with your Namecheap domains, ensuring your domains always point to the correct IP address.
 
-- **Simple Configuration:** Easily configure the application using a single command, simplifying the setup process. The configuration file allows you to define multiple hosts and domains, making it flexible and user-friendly.
+- **Support for Multiple Hosts and Domains:** 🌐 Handle multiple hosts and domains within a single process. Manage and update the dynamic IP addresses for various hosts and domains effortlessly.
 
-- **Cross-Platform Compatibility:** Designed for multiplatform support, though not tested on all operating systems, the application aims to work seamlessly across various environments. This includes Windows, Linux, and macOS, providing flexibility in choosing your preferred operating system.
+- **Simple Configuration:** ⚙️ Easily configure the application using a single command, simplifying the setup process. The configuration file allows you to define multiple hosts and domains, making it flexible and user-friendly.
 
-- **Automatic IP Detection:** Introduces automatic IP detection to streamline the process of obtaining the current IP address, ensuring accuracy in updates.
+- **Cross-Platform Compatibility:** 🌍 Designed for multiplatform support, though not tested on all operating systems, the application aims to work seamlessly across various environments. This includes Windows, Linux, and macOS, providing flexibility in choosing your preferred operating system.
 
-- **Run as a Service:** The application can run as a service, allowing for background execution and automated updates without manual intervention.
+- **Automatic IP Detection:** 🎯 Introduces automatic IP detection to streamline the process of obtaining the current IP address, ensuring accuracy in updates.
 
-- **Single Process Handling:** Efficiently manages all the specified features within a single process, simplifying the overall system architecture and resource utilization.
+- **Run as a Service:** 🔄 The application can run as a service, allowing for background execution and automated updates without manual intervention.
+
+- **Single Process Handling:** ⚡ Efficiently manages all the specified features within a single process, simplifying the overall system architecture and resource utilization.
+
 
 ## Installation
 
@@ -57,9 +60,21 @@ The configuration file is a JSON file with the following structure:
 Make sure to replace the placeholder values (`your-host`, `your-domain`, `your-password`) with your actual configuration details.
 
 - **Host:** The host or subdomain for which you want to update the dynamic IP address.
+
+  :exclamation: **Tips:**
+  - Use `@` when you want to update the root domain.
+  - Use `*` when you want to update the dynamic IP address for all subdomains.
+  - Specify a specific subdomain when you want to update the IP address for that particular subdomain.
+
+
 - **Domain:** The main domain associated with the host or subdomain.
 - **Password:** The password or authentication token required for updating the dynamic IP address.
-- **TTL (Time To Live):** The Time To Live value, representing the time (in minutes) for which the DNS record should be cached.
+- **TTL (Time To Live):** The Time To Live value represents the duration for which the DNS record should be cached.
+  
+  :exclamation: **Tips:**
+  -  The TTL value is **ranged** from 5 to 60 minutes.
+  -  Steps of 5 minutes are **clamped** for setting the TTL.
+
 
 ## Version History
 
