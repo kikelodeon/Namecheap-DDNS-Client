@@ -1,29 +1,8 @@
 ﻿class Program
 {
-    static void DisplayHelp()
+  static void Main(string[] args)
     {
-
-        Console.WriteLine(@"
-         ╔════════════════════════════════════════════════════╗
-         ║               Namecheap DDNSUpdater                ║
-         ║════════════════════════════════════════════════════║
-         ║    Dynamic DNS Ip Updater for Namecheap Domains    ║
-         ╚════════════════════════════════════════════════════╝
-
-                Usage:
-                    DDNSUpdater <config_folder_path>
-
-         ╔════════════════════════════════════════════════════╗
-         ║                  Contact: kikelodeon@eggmedia.net  ║
-         ║                        Release date: January 2024  ║
-         ║                                      Version: 1.0  ║
-         ╚════════════════════════════════════════════════════╝");
-
-    }
-
-    static void Main(string[] args)
-    {
-        string mutexName = "DDNSUpdater";
+        const string mutexName = "Global\\DDNSUpdaterMutex";
 
         using (Mutex mutex = new Mutex(true, mutexName, out bool createdNew))
         {
@@ -51,5 +30,27 @@
                 Environment.Exit(1);
             }
         }
+    }
+
+
+        static void DisplayHelp()
+    {
+
+        Console.WriteLine(@"
+         ╔════════════════════════════════════════════════════╗
+         ║               Namecheap DDNSUpdater                ║
+         ║════════════════════════════════════════════════════║
+         ║    Dynamic DNS Ip Updater for Namecheap Domains    ║
+         ╚════════════════════════════════════════════════════╝
+
+                Usage:
+                    DDNSUpdater <config_folder_path>
+
+         ╔════════════════════════════════════════════════════╗
+         ║                  Contact: kikelodeon@eggmedia.net  ║
+         ║                        Release date: January 2024  ║
+         ║                                      Version: 1.0  ║
+         ╚════════════════════════════════════════════════════╝");
+
     }
 }
