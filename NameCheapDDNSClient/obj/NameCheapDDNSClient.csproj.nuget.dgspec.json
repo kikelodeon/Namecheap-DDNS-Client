@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Kikelo\\Documents\\GitHub\\Namecheap-DDNS-Client\\NameCheapDDNSClient\\NameCheapDDNSClient.csproj": {}
+    "/home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/NameCheapDDNSClient.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Kikelo\\Documents\\GitHub\\Namecheap-DDNS-Client\\NameCheapDDNSClient\\NameCheapDDNSClient.csproj": {
+    "/home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/NameCheapDDNSClient.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Kikelo\\Documents\\GitHub\\Namecheap-DDNS-Client\\NameCheapDDNSClient\\NameCheapDDNSClient.csproj",
+        "projectUniqueName": "/home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/NameCheapDDNSClient.csproj",
         "projectName": "NameCheapDDNSClient",
-        "projectPath": "C:\\Users\\Kikelo\\Documents\\GitHub\\Namecheap-DDNS-Client\\NameCheapDDNSClient\\NameCheapDDNSClient.csproj",
-        "packagesPath": "C:\\Users\\Kikelo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Kikelo\\Documents\\GitHub\\Namecheap-DDNS-Client\\NameCheapDDNSClient\\obj\\",
+        "projectPath": "/home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/NameCheapDDNSClient.csproj",
+        "packagesPath": "/home/remoteuser/.nuget/packages/",
+        "outputPath": "/home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Kikelo\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/home/remoteuser/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -53,7 +53,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/opt/dotnet/sdk/8.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

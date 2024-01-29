@@ -1,75 +1,26 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {
-      "FileHelpers/3.5.2": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/FileHelpers.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/FileHelpers.dll": {
-            "related": ".xml"
-          }
-        }
-      }
-    },
-    "net8.0/linux-arm64": {
-      "FileHelpers/3.5.2": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/FileHelpers.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/FileHelpers.dll": {
-            "related": ".xml"
-          }
-        }
-      }
-    }
+    "net8.0": {}
   },
-  "libraries": {
-    "FileHelpers/3.5.2": {
-      "sha512": "Z0jwjF4AmDBzRWfHFMdrcuBgmoQ2ChLaTmhRjnmReoUPUkT/+5StzWCB0N0RpslYeXiSyvcntcZNLtY58todFw==",
-      "type": "package",
-      "path": "filehelpers/3.5.2",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "filehelpers.3.5.2.nupkg.sha512",
-        "filehelpers.nuspec",
-        "lib/net40/FileHelpers.dll",
-        "lib/net40/FileHelpers.xml",
-        "lib/net45/FileHelpers.dll",
-        "lib/net45/FileHelpers.xml",
-        "lib/netstandard2.0/FileHelpers.dll",
-        "lib/netstandard2.0/FileHelpers.xml"
-      ]
-    }
-  },
+  "libraries": {},
   "projectFileDependencyGroups": {
-    "net8.0": [
-      "FileHelpers >= 3.5.2"
-    ]
+    "net8.0": []
   },
   "packageFolders": {
-    "/root/.nuget/packages/": {}
+    "/home/remoteuser/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/pi/Testapp/NameCheap-DDNS-Updater/NameCheap-DDNS-Updater.csproj",
-      "projectName": "NameCheap-DDNS-Updater",
-      "projectPath": "/home/pi/Testapp/NameCheap-DDNS-Updater/NameCheap-DDNS-Updater.csproj",
-      "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/home/pi/Testapp/NameCheap-DDNS-Updater/obj/",
+      "projectUniqueName": "/home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/NameCheapDDNSClient.csproj",
+      "projectName": "NameCheapDDNSClient",
+      "projectPath": "/home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/NameCheapDDNSClient.csproj",
+      "packagesPath": "/home/remoteuser/.nuget/packages/",
+      "outputPath": "/home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/root/.nuget/NuGet/NuGet.Config"
+        "/home/remoteuser/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -92,12 +43,6 @@
     "frameworks": {
       "net8.0": {
         "targetAlias": "net8.0",
-        "dependencies": {
-          "FileHelpers": {
-            "target": "Package",
-            "version": "[3.5.2, )"
-          }
-        },
         "imports": [
           "net461",
           "net462",
@@ -109,27 +54,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Runtime.linux-arm64",
-            "version": "[8.0.1, 8.0.1]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Runtime.linux-arm64",
-            "version": "[8.0.1, 8.0.1]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
         "runtimeIdentifierGraphPath": "/opt/dotnet/sdk/8.0.101/PortableRuntimeIdentifierGraph.json"
-      }
-    },
-    "runtimes": {
-      "linux-arm64": {
-        "#import": []
       }
     }
   }

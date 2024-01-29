@@ -26,13 +26,11 @@
             }
             catch (Exception ex)
             {
-                DDNSUpdater.LogCritical($"Error: {ex.Message}");
+                DDNSLogger.LogCritical($"Error: {ex.Message}");
                 Environment.Exit(1);
             }
         }
     }
-
-
         static void DisplayHelp()
     {
 

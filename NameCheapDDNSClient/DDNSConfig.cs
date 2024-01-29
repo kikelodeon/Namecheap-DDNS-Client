@@ -11,7 +11,11 @@ public class DDNSConfig
         IP = string.Empty;
         TTL = 15;
     }
-
+   public override string ToString()
+    {
+        // Override ToString to provide a formatted string representation of DDNSConfig
+        return $"Host={Host}, Domain={Domain}, Password=****, IP={IP}, Interval={TTL} minutes";
+    }
     // Properties
     public string Host { get; set; }
     public string Domain { get; set; }
@@ -27,7 +31,7 @@ public class DDNSConfig
             int boundariesValue =  ForceBounds( value);
             if (value != boundariesValue)
             {
-                DDNSUpdater.LogWarning($"Warning: TTL value {value} is outside the allowed range [5, 60]. Clamped to {boundariesValue}.");
+                DDNSLogger.LogWarning($"Warning: TTL value {value} is outside the allowed range [5, 60]. Clamped to {boundariesValue}.");
             }
             // Ensure that the value is within the specified range
             int clampedValue = ClampedToMultipleOf5(boundariesValue);
@@ -35,7 +39,7 @@ public class DDNSConfig
             // Log a warning if clamping occurred
             if (boundariesValue != clampedValue)
             {
-                DDNSUpdater.LogWarning($"Warning: TTL value {value} not multiple of 5. Clamped to {clampedValue}.");
+                DDNSLogger.LogWarning($"Warning: TTL value {value} not multiple of 5. Clamped to {clampedValue}.");
             }
             _ttl = clampedValue;
         }

@@ -10,13 +10,13 @@ class DDNSUpdater
     {
         try
         {
-            Log("Start");
+            DDNSLogger.Log("Running...");
 
             string[] configFiles = Directory.GetFiles(configFolderPath, "*.json");
 
             if (configFiles.Length == 0)
             {
-                Log("No config files found in the specified folder." + configFolderPath);
+                DDNSLogger.Log("No config files found in the specified folder: " + configFolderPath);
                 return;
             }
 
@@ -25,30 +25,27 @@ class DDNSUpdater
                 try
                 {
                     DDNSConfig config = ReadConfig(configFile);
-                    Log($"Adding config for {config.Host}.{config.Domain}");
-
-                    // Add the config to the list
+                    DDNSLogger.Log($"Adding config for {config.Host}.{config.Domain}");
                     ConfigList.Add(config);
                 }
                 catch (Exception ex)
                 {
-                    LogCritical($"Error reading configuration from {configFile}: {ex.Message}");
-                    // Continue to the next config file if there's an error with the current one
+                    DDNSLogger.LogCritical($"Error reading configuration from {configFile}: {ex.Message}");
                 }
             }
-            // Start the main processing loop
+
             if (ConfigList.Count > 0)
             {
                 ProcessConfigs();
             }
             else
             {
-                Log("No config files to process");
+                DDNSLogger.Log("No config files to process");
             }
         }
         catch (Exception ex)
         {
-            LogCritical($"Error: {ex.Message}");
+            DDNSLogger.LogCritical($"Error: {ex.Message}");
             Environment.Exit(1);
         }
     }
@@ -57,7 +54,7 @@ class DDNSUpdater
     {
         while (true)
         {
-            Log("Checking configurations...");
+            DDNSLogger.Log("Checking configuration files...");
 
             foreach (var config in ConfigList)
             {
@@ -65,38 +62,35 @@ class DDNSUpdater
                 {
                     try
                     {
-                        Log($"Running with config params: {GetConfigLog(config)}");
+                        DDNSLogger.Log($"Running: {config}");
                         MakeHttpRequest(config);
                     }
                     catch (Exception ex)
                     {
-                        LogWarning($"Error processing config for {config.Host}.{config.Domain}: {ex.Message}");
+                        DDNSLogger.LogWarning($"Error processing {config}: {ex}");
                     }
                     finally
                     {
                         config.NextRun = DateTime.Now.AddMinutes(config.TTL).AddSeconds(-DateTime.Now.Second);
-                        Log($"Next run for {config.Host}.{config.Domain} will be at {config.NextRun}");
+                        DDNSLogger.Log($"Next run for {config.Host}.{config.Domain} will be at {config.NextRun}");
                     }
                 }
             }
+
             var nextRunDate = ConfigList.Min(c => c.NextRun);
-            List<DDNSConfig> nextUpdateHosts = ConfigList.FindAll(x =>
-                    x.NextRun.Year == nextRunDate.Year &&
-                    x.NextRun.Month == nextRunDate.Month &&
-                    x.NextRun.Day == nextRunDate.Day &&
-                    x.NextRun.Hour == nextRunDate.Hour &&
-                    x.NextRun.Minute == nextRunDate.Minute
-                );
+            var nextUpdateHosts = ConfigList.FindAll(x =>
+                x.NextRun.Year == nextRunDate.Year &&
+                x.NextRun.Month == nextRunDate.Month &&
+                x.NextRun.Day == nextRunDate.Day &&
+                x.NextRun.Hour == nextRunDate.Hour &&
+                x.NextRun.Minute == nextRunDate.Minute
+            );
 
             var nextUpdateHostsString = string.Join(", ", nextUpdateHosts.Select(c => $"{c.Host}.{c.Domain}"));
-
             var remainingTime = nextRunDate - DateTime.Now.AddSeconds(-1);
-            var remainingSeconds = remainingTime.TotalSeconds;
 
-            Log($"Debug: {Math.Floor(remainingTime.TotalMinutes)} minutes and {Math.Floor(remainingTime.TotalSeconds % 60)} seconds left for next update. (Updated hosts will be [{nextUpdateHostsString}])");
-
-            // Sleep for a minute before checking again
-            Thread.Sleep((int)remainingSeconds * 1000);
+            DDNSLogger.Log($"Debug: {Math.Floor(remainingTime.TotalMinutes)} minutes and {Math.Floor(remainingTime.TotalSeconds % 60)} seconds left for next update. (Updated hosts will be [{nextUpdateHostsString}])");
+            Thread.Sleep((int)remainingTime.TotalMilliseconds);
         }
     }
 
@@ -108,16 +102,8 @@ class DDNSUpdater
         {
             DDNSConfig? config = JsonSerializer.Deserialize<DDNSConfig>(configJson);
 
-            // Check if the result is null and handle it accordingly
-            if (config == null)
-            {
-                throw new Exception("Failed to deserialize JSON or the result is null.");
-            }
-
-            // Validate if required parameters are present
-            if (string.IsNullOrEmpty(config.Host) || string.IsNullOrEmpty(config.Domain) ||
-                string.IsNullOrEmpty(config.Password) ||
-                config.TTL <= 0)
+            if (config == null || string.IsNullOrEmpty(config.Host) || string.IsNullOrEmpty(config.Domain) ||
+                string.IsNullOrEmpty(config.Password) || config.TTL <= 0)
             {
                 throw new Exception("Invalid or incomplete configuration file.");
             }
@@ -132,7 +118,6 @@ class DDNSUpdater
 
     private static void MakeHttpRequest(DDNSConfig config)
     {
-        // Construct the URL for DDNS update
         string[] providers = {
             "https://api.ipify.org/?format=json",
             "https://api.my-ip.io/v2/ip.json",
@@ -141,31 +126,17 @@ class DDNSUpdater
 
         string? publicIp = GetPublicIp(providers);
 
-        if (publicIp != null)
+        if (publicIp != null && publicIp != config.IP)
         {
-
-            if (publicIp != config.IP)
-            {
-                // Construct the URL for DDNS update with the detected public IP
-                string url = $"https://dynamicdns.park-your-domain.com/update?host={config.Host}&domain={config.Domain}&password={config.Password}&ip={publicIp}";
-                
-                // Make the HTTPS request using HttpClient
-                HttpResponseMessage response = HttpClient.GetAsync(url).Result;
-                response.EnsureSuccessStatusCode();
-                string responseBody = response.Content.ReadAsStringAsync().Result;
-
-                // Log success or error based on the response
-                LogResponse(responseBody, config, publicIp);
-            }
-            else
-            {
-                Log($"Config has same ip than actual ip, no need to update.");
-            }
-
+            string url = $"https://dynamicdns.park-your-domain.com/update?host={config.Host}&domain={config.Domain}&password={config.Password}&ip={publicIp}";
+            HttpResponseMessage response = HttpClient.GetAsync(url).Result;
+            response.EnsureSuccessStatusCode();
+            string responseBody = response.Content.ReadAsStringAsync().Result;
+            DDNSLogger.LogResponse(responseBody, config, publicIp);
         }
         else
         {
-            LogWarning("Failed to detect public IP from all providers.");
+            DDNSLogger.Log($"Config has the same IP as the actual IP, no need to update.");
         }
     }
 
@@ -174,7 +145,7 @@ class DDNSUpdater
         string? validIp = null;
 
         var cancellationTokenSource = new CancellationTokenSource();
-        cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30)); // Set the timeout to 30 seconds
+        cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
 
         foreach (var apiUrl in providerUrls)
         {
@@ -185,87 +156,35 @@ class DDNSUpdater
                     string responseJson = client.GetStringAsync(apiUrl, cancellationTokenSource.Token).Result;
                     var result = JsonSerializer.Deserialize<PublicIpResponse>(responseJson);
 
-                    // Check if the IP is valid
                     if (IsValidIpAddress(result?.ip))
                     {
                         validIp = result?.ip;
-                        Log($"Successfully received IP ({validIp}) from provider: {apiUrl}");
-                        break; // Break out of the loop if a valid IP is obtained
+                        DDNSLogger.Log($"Successfully received IP ({validIp}) from provider: {apiUrl}");
+                        break;
                     }
                     else
                     {
-                        LogWarning($"Invalid IP format received from {apiUrl}: {result?.ip}");
+                        DDNSLogger.LogWarning($"Invalid IP format received from {apiUrl}: {result?.ip}");
                     }
                 }
             }
             catch (OperationCanceledException)
             {
-                LogWarning($"Timeout exceeded while getting public IP from {apiUrl}");
+                DDNSLogger.LogWarning($"Timeout exceeded while getting public IP from {apiUrl}");
             }
             catch (Exception ex)
             {
-                LogWarning($"Error getting public IP from {apiUrl}: {ex.Message}");
+                DDNSLogger.LogWarning($"Error getting public IP from {apiUrl}: {ex.Message}");
             }
         }
 
         return validIp;
     }
 
-
     private static bool IsValidIpAddress(string? ipAddress)
     {
-        // Add your IP address validation logic here
-        // For a simple example, you can check if the string is not null or empty
-        // and use IPAddress.TryParse to check the format
         return !string.IsNullOrEmpty(ipAddress) && IPAddress.TryParse(ipAddress, out _);
     }
 
-    private static string GetConfigLog(DDNSConfig config)
-    {
-        return $"Host={config.Host}, Domain={config.Domain}, Password=****, IP={config.IP}, Interval={config.TTL} minutes";
-    }
 
-    private static void Log(string message)
-    {
-        Console.WriteLine($"{DateTime.Now:HH:mm:ss} - {message}");
-    }
-
-    private static void LogResponse(string response, DDNSConfig config, string ip)
-    {
-        try
-        {
-            // Parse the XML response
-            var xmlDoc = new System.Xml.XmlDocument();
-            xmlDoc.LoadXml(response);
-
-            var errCount = int.Parse(xmlDoc.SelectSingleNode("//ErrCount")?.InnerText ?? "0");
-
-            if (errCount > 0)
-            {
-                // Log error details
-                var errorDescription = xmlDoc.SelectSingleNode("//errors/Err1")?.InnerText;
-                Log($"Error: {errorDescription}");
-            }
-            else
-            {
-                // Additional log for DDNS A+ Record setup
-                config.IP = ip;
-                Log($"Successfully setted DDNS A+ Record on {config.Host}.{config.Domain} ip: {ip} on your namecheap.com account");
-            }
-        }
-        catch (Exception ex)
-        {
-            // Log any parsing or unexpected errors
-            LogWarning($"Error parsing response: {ex.Message}");
-        }
-    }
-    public static void LogWarning(string message)
-    {
-        Console.WriteLine($"{DateTime.Now:HH:mm:ss} - WARNING - {message}");
-    }
-    public static void LogCritical(string message)
-    {
-        // Add code here to log critical messages
-        Console.WriteLine($"{DateTime.Now:HH:mm:ss} - CRITICAL - {message}");
-    }
 }
