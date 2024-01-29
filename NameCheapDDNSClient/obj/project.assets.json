@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Kikelo\\Documents\\GitHub\\NameCheapDDNS\\NameCheapDDNSClient\\NameCheapDDNSClient.csproj",
+      "projectUniqueName": "C:\\Users\\Kikelo\\Documents\\GitHub\\Namecheap-DDNS-Client\\NameCheapDDNSClient\\NameCheapDDNSClient.csproj",
       "projectName": "NameCheapDDNSClient",
-      "projectPath": "C:\\Users\\Kikelo\\Documents\\GitHub\\NameCheapDDNS\\NameCheapDDNSClient\\NameCheapDDNSClient.csproj",
+      "projectPath": "C:\\Users\\Kikelo\\Documents\\GitHub\\Namecheap-DDNS-Client\\NameCheapDDNSClient\\NameCheapDDNSClient.csproj",
       "packagesPath": "C:\\Users\\Kikelo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Kikelo\\Documents\\GitHub\\NameCheapDDNS\\NameCheapDDNSClient\\obj\\",
+      "outputPath": "C:\\Users\\Kikelo\\Documents\\GitHub\\Namecheap-DDNS-Client\\NameCheapDDNSClient\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Kikelo\\AppData\\Roaming\\NuGet\\NuGet.Config"

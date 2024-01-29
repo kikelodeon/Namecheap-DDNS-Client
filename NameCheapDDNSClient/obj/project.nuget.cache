@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "B6L9vuewcE+YR7oOYCXF5j+O4iNc4lBo32a/SIf3Fd/1J2jc/EMljbu/C5KDwGgkfYmO0jc+rfRWweCW7DuwDA==",
+  "dgSpecHash": "vKHxUc1enWCrXWaOEWW+YA5ljfVlLCUXdX8aD+dnnX31d42BC/DQWUirm2S6viRuH6NuON2Hyo9ZXeWvlge0dQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Kikelo\\Documents\\GitHub\\NameCheapDDNS\\NameCheapDDNSClient\\NameCheapDDNSClient.csproj",
+  "projectFilePath": "C:\\Users\\Kikelo\\Documents\\GitHub\\Namecheap-DDNS-Client\\NameCheapDDNSClient\\NameCheapDDNSClient.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
