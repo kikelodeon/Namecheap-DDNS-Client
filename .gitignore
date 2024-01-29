@@ -1,6 +1,6 @@
-# Ignored folders
-###################
-NameCheapDDNSClient/bin/*
-NameCheapDDNSClient/obj/*
-NameCheapDDNSClient/obj/net8.0/*
-NameCheapDDNSClient/AppData/*
+*.suo
+*.user
+_ReSharper.*
+bin
+obj
+packages
