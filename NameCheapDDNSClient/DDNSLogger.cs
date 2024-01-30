@@ -1,3 +1,5 @@
+using System.Net;
+
 class DDNSLogger
 {
     public static void Log(string message)
@@ -26,17 +28,17 @@ class DDNSLogger
             if (errCount > 0)
             {
                 var errorDescription = xmlDoc.SelectSingleNode("//errors/Err1")?.InnerText;
-                DDNSLogger.Log($"Error: {errorDescription}");
+                Log($"Error: {errorDescription}");
             }
             else
             {
                 config.IP = ip;
-                DDNSLogger.Log($"Successfully set DDNS A+ Record on {config.Host}.{config.Domain} IP: {ip} on your namecheap.com account");
+                Log($"Successfully set DDNS A+ Record on {config.Host}.{config.Domain} IP: {ip} on your namecheap.com account");
             }
         }
         catch (Exception ex)
         {
-            DDNSLogger.LogWarning($"Error parsing response: {ex.Message}");
+            LogWarning($"Error parsing response: {ex.Message}");
         }
     }
 }
