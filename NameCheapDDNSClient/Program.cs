@@ -1,6 +1,6 @@
 ﻿class Program
 {
-  static void Main(string[] args)
+    static void Main(string[] args)
     {
         const string mutexName = "Global\\DDNSUpdaterMutex";
 
@@ -11,13 +11,12 @@
                 DisplayHelp();
                 return;
             }
-
             if (!createdNew)
             {
                 Console.WriteLine("Another instance of DDNSUpdater is already running. Exiting...");
                 return;
             }
-            
+
             string configFolderPath = args[0];
 
             try
@@ -30,25 +29,29 @@
                 Environment.Exit(1);
             }
         }
-    }
+
         static void DisplayHelp()
-    {
+        {
+            Console.WriteLine(@"
+       ╔══════════════════════════════════════════════════════════╗
+       ║                  Namecheap DDNS Updater                  ║
+       ║══════════════════════════════════════════════════════════║
+       ║       Dynamic DNS Ip Updater for Namecheap Domains       ║
+       ╚══════════════════════════════════════════════════════════╝
 
-        Console.WriteLine(@"
-         ╔════════════════════════════════════════════════════╗
-         ║               Namecheap DDNSUpdater                ║
-         ║════════════════════════════════════════════════════║
-         ║    Dynamic DNS Ip Updater for Namecheap Domains    ║
-         ╚════════════════════════════════════════════════════╝
+        Usage:
+            NameCheap-DDNS-Updater /path/to/hosts
+                    
+        Options:
+            --help Displays this mesage.
 
-                Usage:
-                    DDNSUpdater <config_folder_path>
+       ╔══════════════════════════════════════════════════════════╗
+       ║                                              @kikelodeon ║
+       ║                               Release date: January 2024 ║
+       ╚══════════════════════════════════════════════════════════╝
+                                                          v 1.0.2
+                                                                ");
 
-         ╔════════════════════════════════════════════════════╗
-         ║                  Contact: kikelodeon@eggmedia.net  ║
-         ║                        Release date: January 2024  ║
-         ║                                      Version: 1.0  ║
-         ╚════════════════════════════════════════════════════╝");
-
+        }
     }
 }

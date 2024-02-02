@@ -4,7 +4,7 @@ using System.Text.Json;
 class DDNSUpdater
 {
     private static readonly HttpClient HttpClient = new HttpClient();
-    private static readonly List<DDNSConfig> ConfigList = new List<DDNSConfig>();
+    public static readonly List<DDNSConfig> ConfigList = new List<DDNSConfig>();
 
     public static void Run(string configFolderPath)
     {
@@ -24,7 +24,7 @@ class DDNSUpdater
             {
                 try
                 {
-                    DDNSConfig config = ReadConfig(configFile);
+                    DDNSConfig config = DDNSConfig.Read(configFile);
                     DDNSLogger.Log($"Adding config for {config.Host}.{config.Domain}");
                     ConfigList.Add(config);
                 }
@@ -55,6 +55,13 @@ class DDNSUpdater
         while (true)
         {
             DDNSLogger.Log("Checking configuration files...");
+            string[] providers = {
+            "https://api.ipify.org/?format=json",
+            "https://api.my-ip.io/v2/ip.json",
+            "https://api.myip.com/",
+        };
+
+            string? publicIp = GetPublicIp(providers);
 
             foreach (var config in ConfigList)
             {
@@ -63,7 +70,7 @@ class DDNSUpdater
                     try
                     {
                         DDNSLogger.Log($"Running: {config}");
-                        MakeHttpRequest(config);
+                        MakeHttpRequest(config, publicIp);
                     }
                     catch (Exception ex)
                     {
@@ -71,7 +78,8 @@ class DDNSUpdater
                     }
                     finally
                     {
-                        config.NextRun = DateTime.Now.AddMinutes(config.TTL).AddSeconds(-DateTime.Now.Second);
+                        DateTime next = config.NextRun.AddMinutes(config.TTL);
+                        config.NextRun = new DateTime(next.Year,next.Month,next.Day,next.Hour,next.Minute,0);
                         DDNSLogger.Log($"Next run for {config.Host}.{config.Domain} will be at {config.NextRun}");
                     }
                 }
@@ -87,45 +95,15 @@ class DDNSUpdater
             );
 
             var nextUpdateHostsString = string.Join(", ", nextUpdateHosts.Select(c => $"{c.Host}.{c.Domain}"));
-            var remainingTime = nextRunDate - DateTime.Now.AddSeconds(-1);
+            var remainingTime = nextRunDate - DateTime.Now.AddSeconds(1);
 
             DDNSLogger.Log($"Debug: {Math.Floor(remainingTime.TotalMinutes)} minutes and {Math.Floor(remainingTime.TotalSeconds % 60)} seconds left for next update. (Updated hosts will be [{nextUpdateHostsString}])");
-            Thread.Sleep((int)remainingTime.TotalMilliseconds);
+            Thread.Sleep((int)remainingTime.TotalMilliseconds<1000?1000:(int)remainingTime.TotalMilliseconds);
         }
     }
 
-    private static DDNSConfig ReadConfig(string filePath)
+    private static void MakeHttpRequest(DDNSConfig config, string? publicIp)
     {
-        string configJson = File.ReadAllText(filePath);
-
-        try
-        {
-            DDNSConfig? config = JsonSerializer.Deserialize<DDNSConfig>(configJson);
-
-            if (config == null || string.IsNullOrEmpty(config.Host) || string.IsNullOrEmpty(config.Domain) ||
-                string.IsNullOrEmpty(config.Password) || config.TTL <= 0)
-            {
-                throw new Exception("Invalid or incomplete configuration file.");
-            }
-
-            return config;
-        }
-        catch (JsonException ex)
-        {
-            throw new Exception($"Error parsing configuration file: {ex.Message}");
-        }
-    }
-
-    private static void MakeHttpRequest(DDNSConfig config)
-    {
-        string[] providers = {
-            "https://api.ipify.org/?format=json",
-            "https://api.my-ip.io/v2/ip.json",
-            "https://api.myip.com/",
-        };
-
-        string? publicIp = GetPublicIp(providers);
-
         if (publicIp != null && publicIp != config.IP)
         {
             string url = $"https://dynamicdns.park-your-domain.com/update?host={config.Host}&domain={config.Domain}&password={config.Password}&ip={publicIp}";

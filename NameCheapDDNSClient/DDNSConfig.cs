@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 public class DDNSConfig
 {
     private int _ttl;
@@ -10,6 +12,29 @@ public class DDNSConfig
         Password = string.Empty;
         IP = string.Empty;
         TTL = 15;
+    }
+    
+
+    public static DDNSConfig Read(string filePath)
+    {
+        string configJson = File.ReadAllText(filePath);
+
+        try
+        {
+            DDNSConfig? config = JsonSerializer.Deserialize<DDNSConfig>(configJson);
+
+            if (config == null || string.IsNullOrEmpty(config.Host) || string.IsNullOrEmpty(config.Domain) ||
+                string.IsNullOrEmpty(config.Password) || config.TTL <= 0)
+            {
+                throw new Exception("Invalid or incomplete configuration file.");
+            }
+
+            return config;
+        }
+        catch (JsonException ex)
+        {
+            throw new Exception($"Error parsing configuration file: {ex.Message}");
+        }
     }
    public override string ToString()
     {
