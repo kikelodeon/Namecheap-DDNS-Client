@@ -3,7 +3,7 @@ using System.Text.Json;
 public class DDNSConfig
 {
     private int _ttl;
-    private DateTime _nextRun = DateTime.Now.Date;
+    private DateTime _nextRun = DateTime.Now;
 
     public DDNSConfig()
     {
@@ -56,7 +56,7 @@ public class DDNSConfig
             int boundariesValue =  ForceBounds( value);
             if (value != boundariesValue)
             {
-                DDNSLogger.LogWarning($"Warning: TTL value {value} is outside the allowed range [5, 60]. Clamped to {boundariesValue}.");
+                DDNSLogger.Warning("Warning: TTL value {value} is outside the allowed range [5, 60]. Clamped to {boundariesValue}.",value,boundariesValue);
             }
             // Ensure that the value is within the specified range
             int clampedValue = ClampedToMultipleOf5(boundariesValue);
@@ -64,7 +64,7 @@ public class DDNSConfig
             // Log a warning if clamping occurred
             if (boundariesValue != clampedValue)
             {
-                DDNSLogger.LogWarning($"Warning: TTL value {value} not multiple of 5. Clamped to {clampedValue}.");
+                DDNSLogger.Warning("Warning: TTL value {value} not multiple of 5. Clamped to {clampedValue}.",value,clampedValue);
             }
             _ttl = clampedValue;
         }

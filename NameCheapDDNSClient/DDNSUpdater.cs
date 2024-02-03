@@ -10,13 +10,13 @@ class DDNSUpdater
     {
         try
         {
-            DDNSLogger.Log("Running...");
+            DDNSLogger.Info("Running...");
 
             string[] configFiles = Directory.GetFiles(configFolderPath, "*.json");
 
             if (configFiles.Length == 0)
             {
-                DDNSLogger.Log("No config files found in the specified folder: " + configFolderPath);
+                DDNSLogger.Info("No config files found in the specified folder: {configFolderPath}",configFolderPath);
                 return;
             }
 
@@ -25,12 +25,12 @@ class DDNSUpdater
                 try
                 {
                     DDNSConfig config = DDNSConfig.Read(configFile);
-                    DDNSLogger.Log($"Adding config for {config.Host}.{config.Domain}");
                     ConfigList.Add(config);
+                    DDNSLogger.Success("Successfully added config for {Host}.{Domain}",config.Host,config.Domain);
                 }
                 catch (Exception ex)
                 {
-                    DDNSLogger.LogCritical($"Error reading configuration from {configFile}: {ex.Message}");
+                    DDNSLogger.Critical("Error reading configuration from {configFile}: {ex}",configFile,ex.Message);
                 }
             }
 
@@ -40,12 +40,12 @@ class DDNSUpdater
             }
             else
             {
-                DDNSLogger.Log("No config files to process");
+                DDNSLogger.Info("No config files to process");
             }
         }
         catch (Exception ex)
         {
-            DDNSLogger.LogCritical($"Error: {ex.Message}");
+            DDNSLogger.Critical("Error: {ex}",ex.Message);
             Environment.Exit(1);
         }
     }
@@ -54,36 +54,40 @@ class DDNSUpdater
     {
         while (true)
         {
-            DDNSLogger.Log("Checking configuration files...");
+            DDNSLogger.Info("Checking configuration files...");
             string[] providers = {
             "https://api.ipify.org/?format=json",
             "https://api.my-ip.io/v2/ip.json",
             "https://api.myip.com/",
-        };
+            };
 
             string? publicIp = GetPublicIp(providers);
 
-            foreach (var config in ConfigList)
+            while(ConfigList.Min(c => c.NextRun)<=DateTime.Now.AddSeconds(10))
             {
-                if (DateTime.Now >= config.NextRun)
+                foreach (var config in ConfigList)
                 {
-                    try
+                    if (config.NextRun<=DateTime.Now)
                     {
-                        DDNSLogger.Log($"Running: {config}");
-                        MakeHttpRequest(config, publicIp);
-                    }
-                    catch (Exception ex)
-                    {
-                        DDNSLogger.LogWarning($"Error processing {config}: {ex}");
-                    }
-                    finally
-                    {
-                        DateTime next = config.NextRun.AddMinutes(config.TTL);
-                        config.NextRun = new DateTime(next.Year,next.Month,next.Day,next.Hour,next.Minute,0);
-                        DDNSLogger.Log($"Next run for {config.Host}.{config.Domain} will be at {config.NextRun}");
+                        try
+                        {
+                            DDNSLogger.Info("Running: {config}",config);
+                            MakeHttpRequest(config, publicIp);
+                        }
+                        catch (Exception ex)
+                        {
+                            DDNSLogger.Warning("Error processing {config}: {ex}",config,ex);
+                        }
+                        finally
+                        {
+                            DateTime next = config.NextRun.AddMinutes(config.TTL);
+                            config.NextRun = new DateTime(next.Year,next.Month,next.Day,next.Hour,next.Minute,0);
+                            DDNSLogger.Info("Next run for {Host}.{Domain} will be at {NextRun}",config.Host,config.Domain,config.NextRun);
+                        }
                     }
                 }
             }
+                
 
             var nextRunDate = ConfigList.Min(c => c.NextRun);
             var nextUpdateHosts = ConfigList.FindAll(x =>
@@ -95,9 +99,12 @@ class DDNSUpdater
             );
 
             var nextUpdateHostsString = string.Join(", ", nextUpdateHosts.Select(c => $"{c.Host}.{c.Domain}"));
-            var remainingTime = nextRunDate - DateTime.Now.AddSeconds(1);
+            var remainingTime = nextRunDate - DateTime.Now;
 
-            DDNSLogger.Log($"Debug: {Math.Floor(remainingTime.TotalMinutes)} minutes and {Math.Floor(remainingTime.TotalSeconds % 60)} seconds left for next update. (Updated hosts will be [{nextUpdateHostsString}])");
+            var remainingMinutes = Math.Floor(remainingTime.TotalMinutes);
+            var remainingSeconds = Math.Floor(remainingTime.TotalSeconds % 60);
+            DDNSLogger.Info("Debug: {remainingMinutes} minutes and {remaininSeconds} seconds left for next update. (Updated hosts will be [{nextUpdateHostsString}])",remainingMinutes, remainingSeconds, nextUpdateHostsString);
+
             Thread.Sleep((int)remainingTime.TotalMilliseconds<1000?1000:(int)remainingTime.TotalMilliseconds);
         }
     }
@@ -114,7 +121,7 @@ class DDNSUpdater
         }
         else
         {
-            DDNSLogger.Log($"Config has the same IP as the actual IP, no need to update.");
+            DDNSLogger.Info($"Config has the same IP as the actual IP, no need to update.");
         }
     }
 
@@ -137,22 +144,22 @@ class DDNSUpdater
                     if (IsValidIpAddress(result?.ip))
                     {
                         validIp = result?.ip;
-                        DDNSLogger.Log($"Successfully received IP ({validIp}) from provider: {apiUrl}");
+                        DDNSLogger.Success("Successfully received IP ({validIp}) from provider: {apiUrl}",validIp,apiUrl);
                         break;
                     }
                     else
                     {
-                        DDNSLogger.LogWarning($"Invalid IP format received from {apiUrl}: {result?.ip}");
+                        DDNSLogger.Warning("Invalid IP format received from {apiUrl}: {result?.ip}",apiUrl,result?.ip);
                     }
                 }
             }
             catch (OperationCanceledException)
             {
-                DDNSLogger.LogWarning($"Timeout exceeded while getting public IP from {apiUrl}");
+                DDNSLogger.Warning("Timeout exceeded while getting public IP from {apiUrl}",apiUrl);
             }
             catch (Exception ex)
             {
-                DDNSLogger.LogWarning($"Error getting public IP from {apiUrl}: {ex.Message}");
+                DDNSLogger.Warning("Error getting public IP from {apiUrl}: {ex}",apiUrl,ex.Message);
             }
         }
 

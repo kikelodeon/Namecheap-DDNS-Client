@@ -25,7 +25,7 @@
             }
             catch (Exception ex)
             {
-                DDNSLogger.LogCritical($"Error: {ex.Message}");
+                DDNSLogger.Critical($"Error: {ex.Message}");
                 Environment.Exit(1);
             }
         }

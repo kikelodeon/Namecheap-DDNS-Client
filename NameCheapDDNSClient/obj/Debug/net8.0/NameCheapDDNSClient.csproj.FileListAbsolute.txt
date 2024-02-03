@@ -42,3 +42,8 @@ C:/Users/Kikelo/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/obj/D
 /home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/obj/Debug/net8.0/NameCheapDDNSClient.pdb
 /home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/obj/Debug/net8.0/NameCheapDDNSClient.genruntimeconfig.cache
 /home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/obj/Debug/net8.0/ref/NameCheapDDNSClient.dll
+/home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/obj/Debug/net8.0/NameCheapDDNSClient.csproj.AssemblyReference.cache
+/home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/bin/Debug/net8.0/Serilog.dll
+/home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/bin/Debug/net8.0/Serilog.Sinks.Console.dll
+/home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/bin/Debug/net8.0/Serilog.Sinks.File.dll
+/home/remoteuser/Documents/GitHub/Namecheap-DDNS-Client/NameCheapDDNSClient/obj/Debug/net8.0/NameCheapDDNSClient.csproj.CopyComplete

@@ -1,26 +1,136 @@
-using System.Net;
-
+using System.Xml;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole.Themes;
 class DDNSLogger
 {
-    public static void Log(string message)
+    static DDNSLogger()
     {
-        Console.WriteLine($"{DateTime.Now:HH:mm:ss} - {message}");
+   var customThemeStyles = new Dictionary<ConsoleThemeStyle, SystemConsoleThemeStyle>
+        {
+            {
+                ConsoleThemeStyle.Text, new SystemConsoleThemeStyle
+                {
+                    Foreground = ConsoleColor.White,  // Default text color
+                }
+            },
+            {
+                ConsoleThemeStyle.String, new SystemConsoleThemeStyle
+                {
+                    Foreground = ConsoleColor.Cyan,  // Color for string literals
+                }
+            },
+            {
+                ConsoleThemeStyle.Number, new SystemConsoleThemeStyle
+                {
+                    Foreground = ConsoleColor.Magenta,  // Color for string literals
+                }
+            },
+            {
+                ConsoleThemeStyle.Boolean, new SystemConsoleThemeStyle
+                {
+                    Foreground = ConsoleColor.Yellow,  // Color for string literals
+                }
+            },
+            {
+                ConsoleThemeStyle.Scalar, new SystemConsoleThemeStyle
+                {
+                    Foreground = ConsoleColor.Green,  // Color for string literals
+                }
+            },
+            {
+                ConsoleThemeStyle.Name, new SystemConsoleThemeStyle
+                {
+                    Foreground = ConsoleColor.DarkBlue,  // Color for string literals
+                }
+            },
+            {
+                ConsoleThemeStyle.SecondaryText, new SystemConsoleThemeStyle
+                {
+                    Foreground = ConsoleColor.DarkGray,  // Color for string literals
+                }
+            },
+            {
+                ConsoleThemeStyle.TertiaryText, new SystemConsoleThemeStyle
+                {
+                    Foreground = ConsoleColor.DarkMagenta,  // Color for string literals
+                }
+            },
+            {
+                ConsoleThemeStyle.LevelInformation, new SystemConsoleThemeStyle
+                {
+                    Foreground = ConsoleColor.Blue,  // Color for Information level
+                }
+            },
+            {
+                ConsoleThemeStyle.LevelWarning, new SystemConsoleThemeStyle
+                {
+                    Foreground = ConsoleColor.Yellow,  // Color for Warning level
+                }
+            },
+            {
+                ConsoleThemeStyle.LevelError, new SystemConsoleThemeStyle
+                {
+                    Foreground = ConsoleColor.Red,  // Color for Error level
+                }
+            },
+            {
+                ConsoleThemeStyle.LevelDebug, new SystemConsoleThemeStyle
+                {
+                    Foreground = ConsoleColor.Gray,  // Color for Debug level
+                }
+            },
+        };
+
+var customTheme = new SystemConsoleTheme(customThemeStyles);
+    
+        // Configure Serilog for console output and file logging
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console(theme: customTheme)
+            .WriteTo.File(GetLogFilePath(), restrictedToMinimumLevel: LogEventLevel.Information, rollingInterval: RollingInterval.Day)
+            .CreateLogger();
     }
 
-    public static void LogWarning(string message)
+    private static string GetLogFilePath()
     {
-        Console.WriteLine($"{DateTime.Now:HH:mm:ss} - WARNING - {message}");
+        string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        string logDirectory = Path.Combine(appDataPath, Constants.ApplicationName);
+
+        if (!Directory.Exists(logDirectory))
+        {
+            Directory.CreateDirectory(logDirectory);
+        }
+
+        return Path.Combine(logDirectory, Constants.ApplicationName + ".log");
     }
 
-    public static void LogCritical(string message)
+    public static void Info(string message, params object?[]? propertyValues)
     {
-        Console.WriteLine($"{DateTime.Now:HH:mm:ss} - CRITICAL - {message}");
+        Log.Information($"{message}",propertyValues);
     }
+
+    public static void Success(string message, params object?[]? propertyValues)
+    {
+        Log.Information($"{message}",propertyValues);
+    }
+    public static void Warning(string message, params object?[]? propertyValues)
+    {
+        Log.Warning($"{message}",propertyValues);
+    }
+    public static void Debug(string message, params object?[]? propertyValues)
+    {
+        Log.Debug($"{message}",propertyValues);
+    }
+    public static void Critical(string message, params object?[]? propertyValues)
+    {
+        Log.Error($"{message}",propertyValues);
+    }
+
     public static void LogResponse(string response, DDNSConfig config, string ip)
     {
         try
         {
-            var xmlDoc = new System.Xml.XmlDocument();
+            var xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(response);
 
             var errCount = int.Parse(xmlDoc.SelectSingleNode("//ErrCount")?.InnerText ?? "0");
@@ -28,17 +138,17 @@ class DDNSLogger
             if (errCount > 0)
             {
                 var errorDescription = xmlDoc.SelectSingleNode("//errors/Err1")?.InnerText;
-                Log($"Error: {errorDescription}");
+                Warning($"{errorDescription}");
             }
             else
             {
                 config.IP = ip;
-                Log($"Successfully set DDNS A+ Record on {config.Host}.{config.Domain} IP: {ip} on your namecheap.com account");
+                Success("Successfully set DDNS A+ Record on {Host}.{Domain} IP: {ip} on your namecheap.com account",config.Host, config.Domain, ip);
             }
         }
         catch (Exception ex)
         {
-            LogWarning($"Error parsing response: {ex.Message}");
+           Critical("Error parsing response: {ex}",ex.Message);
         }
     }
 }
