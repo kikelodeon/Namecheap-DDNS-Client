@@ -1,12 +1,12 @@
-using System.Xml;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
+namespace NamecheapDDNSUpdater{
 class DDNSLogger
 {
     static DDNSLogger()
     {
-   var customThemeStyles = new Dictionary<ConsoleThemeStyle, SystemConsoleThemeStyle>
+        var customThemeStyles = new Dictionary<ConsoleThemeStyle, SystemConsoleThemeStyle>
         {
             {
                 ConsoleThemeStyle.Text, new SystemConsoleThemeStyle
@@ -81,26 +81,30 @@ class DDNSLogger
                 }
             },
         };
-
-var customTheme = new SystemConsoleTheme(customThemeStyles);
-    
+        var customTheme = new SystemConsoleTheme(customThemeStyles);
         // Configure Serilog for console output and file logging
         Log.Logger = new LoggerConfiguration()
             .WriteTo.Console(theme: customTheme)
-            .WriteTo.File(GetLogFilePath(), restrictedToMinimumLevel: LogEventLevel.Information, rollingInterval: RollingInterval.Day)
+            .WriteTo.File(GetLogFilePath(),restrictedToMinimumLevel:LogEventLevel.Information, rollingInterval: RollingInterval.Day)
             .CreateLogger();
     }
 
+    private static string GetLogOsPath()
+    {
+        if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
+        {
+            return  "/var/log"; // Linux or macOS
+        }
+        else
+        {
+            return  Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData); // Windows or other
+        }
+    }
     private static string GetLogFilePath()
     {
-        string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        string logDirectory = Path.Combine(appDataPath, Constants.ApplicationName);
-
-        if (!Directory.Exists(logDirectory))
-        {
-            Directory.CreateDirectory(logDirectory);
-        }
-
+        string osSpecificDirectory = GetLogOsPath();
+        string logDirectory = Path.Combine(osSpecificDirectory, Constants.ApplicationName);
+        Directory.CreateDirectory(logDirectory);
         return Path.Combine(logDirectory, Constants.ApplicationName + ".log");
     }
 
@@ -125,30 +129,5 @@ var customTheme = new SystemConsoleTheme(customThemeStyles);
     {
         Log.Error($"{message}",propertyValues);
     }
-
-    public static void LogResponse(string response, DDNSConfig config, string ip)
-    {
-        try
-        {
-            var xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(response);
-
-            var errCount = int.Parse(xmlDoc.SelectSingleNode("//ErrCount")?.InnerText ?? "0");
-
-            if (errCount > 0)
-            {
-                var errorDescription = xmlDoc.SelectSingleNode("//errors/Err1")?.InnerText;
-                Warning($"{errorDescription}");
-            }
-            else
-            {
-                config.IP = ip;
-                Success("Successfully set DDNS A+ Record on {Host}.{Domain} IP: {ip} on your namecheap.com account",config.Host, config.Domain, ip);
-            }
-        }
-        catch (Exception ex)
-        {
-           Critical("Error parsing response: {ex}",ex.Message);
-        }
-    }
+}
 }

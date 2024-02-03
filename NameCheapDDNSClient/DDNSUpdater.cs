@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
-
+using System.Xml;
+namespace NamecheapDDNSUpdater{
 class DDNSUpdater
 {
     private static readonly HttpClient HttpClient = new HttpClient();
@@ -11,9 +12,7 @@ class DDNSUpdater
         try
         {
             DDNSLogger.Info("Running...");
-
             string[] configFiles = Directory.GetFiles(configFolderPath, "*.json");
-
             if (configFiles.Length == 0)
             {
                 DDNSLogger.Info("No config files found in the specified folder: {configFolderPath}",configFolderPath);
@@ -108,7 +107,31 @@ class DDNSUpdater
             Thread.Sleep((int)remainingTime.TotalMilliseconds<1000?1000:(int)remainingTime.TotalMilliseconds);
         }
     }
+    private static void ParseResponse(string response, DDNSConfig config, string ip)
+    {
+        try
+        {
+            var xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(response);
 
+            var errCount = int.Parse(xmlDoc.SelectSingleNode("//ErrCount")?.InnerText ?? "0");
+
+            if (errCount > 0)
+            {
+                var errorDescription = xmlDoc.SelectSingleNode("//errors/Err1")?.InnerText;
+                DDNSLogger.Warning($"{errorDescription}");
+            }
+            else
+            {
+                config.IP = ip;
+                DDNSLogger.Success("Successfully set DDNS A+ Record on {Host}.{Domain} IP: {ip} on your namecheap.com account",config.Host, config.Domain, ip);
+            }
+        }
+        catch (Exception ex)
+        {
+           DDNSLogger.Critical("Error parsing response: {ex}",ex.Message);
+        }
+    }
     private static void MakeHttpRequest(DDNSConfig config, string? publicIp)
     {
         if (publicIp != null && publicIp != config.IP)
@@ -117,15 +140,14 @@ class DDNSUpdater
             HttpResponseMessage response = HttpClient.GetAsync(url).Result;
             response.EnsureSuccessStatusCode();
             string responseBody = response.Content.ReadAsStringAsync().Result;
-            DDNSLogger.LogResponse(responseBody, config, publicIp);
+            ParseResponse(responseBody, config, publicIp);
         }
         else
         {
             DDNSLogger.Info($"Config has the same IP as the actual IP, no need to update.");
         }
     }
-
-    static string? GetPublicIp(string[] providerUrls)
+    private static string? GetPublicIp(string[] providerUrls)
     {
         string? validIp = null;
 
@@ -165,11 +187,10 @@ class DDNSUpdater
 
         return validIp;
     }
-
     private static bool IsValidIpAddress(string? ipAddress)
     {
         return !string.IsNullOrEmpty(ipAddress) && IPAddress.TryParse(ipAddress, out _);
     }
-
+}
 
 }

@@ -1,5 +1,6 @@
 using System.Text.Json;
 
+namespace NamecheapDDNSUpdater{
 public class DDNSConfig
 {
     private int _ttl;
@@ -95,4 +96,5 @@ public class DDNSConfig
 
         return closestMultiple;
     }
+}
 }

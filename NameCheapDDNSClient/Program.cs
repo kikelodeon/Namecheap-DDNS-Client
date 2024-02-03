@@ -1,4 +1,6 @@
-﻿class Program
+﻿using NamecheapDDNSUpdater;
+
+class Program
 {
     static void Main(string[] args)
     {
@@ -13,7 +15,7 @@
             }
             if (!createdNew)
             {
-                Console.WriteLine("Another instance of DDNSUpdater is already running. Exiting...");
+                DDNSLogger.Critical("Another instance of DDNSUpdater is already running. Exiting...");
                 return;
             }
 
