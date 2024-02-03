@@ -108,26 +108,24 @@ class DDNSLogger
         return Path.Combine(logDirectory, Constants.ApplicationName + ".log");
     }
 
-    public static void Info(string message, params object?[]? propertyValues)
+    public static void Info(string message, params object?[] propertyValues)
     {
-        Log.Information($"{message}",propertyValues);
+        Log.Information(message, propertyValues);
     }
 
-    public static void Success(string message, params object?[]? propertyValues)
+    public static void Warning(string message, params object?[] propertyValues)
     {
-        Log.Information($"{message}",propertyValues);
+        Log.Warning(message, propertyValues);
     }
-    public static void Warning(string message, params object?[]? propertyValues)
+
+    public static void Debug(string message, params object?[] propertyValues)
     {
-        Log.Warning($"{message}",propertyValues);
+        Log.Debug(message, propertyValues);
     }
-    public static void Debug(string message, params object?[]? propertyValues)
+
+    public static void Critical(string message, params object?[] propertyValues)
     {
-        Log.Debug($"{message}",propertyValues);
-    }
-    public static void Critical(string message, params object?[]? propertyValues)
-    {
-        Log.Error($"{message}",propertyValues);
+        Log.Error(message, propertyValues);
     }
 }
 }

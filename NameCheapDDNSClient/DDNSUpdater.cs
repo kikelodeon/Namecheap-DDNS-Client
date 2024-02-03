@@ -25,7 +25,7 @@ class DDNSUpdater
                 {
                     DDNSConfig config = DDNSConfig.Read(configFile);
                     ConfigList.Add(config);
-                    DDNSLogger.Success("Successfully added config for {Host}.{Domain}",config.Host,config.Domain);
+                    DDNSLogger.Info("Successfully added config for {Host}.{Domain}",config.Host,config.Domain);
                 }
                 catch (Exception ex)
                 {
@@ -124,7 +124,7 @@ class DDNSUpdater
             else
             {
                 config.IP = ip;
-                DDNSLogger.Success("Successfully set DDNS A+ Record on {Host}.{Domain} IP: {ip} on your namecheap.com account",config.Host, config.Domain, ip);
+                DDNSLogger.Info("Successfully set DDNS A+ Record on {Host}.{Domain} IP: {ip} on your namecheap.com account",config.Host, config.Domain, ip);
             }
         }
         catch (Exception ex)
@@ -166,7 +166,7 @@ class DDNSUpdater
                     if (IsValidIpAddress(result?.ip))
                     {
                         validIp = result?.ip;
-                        DDNSLogger.Success("Successfully received IP ({validIp}) from provider: {apiUrl}",validIp,apiUrl);
+                        DDNSLogger.Info("Successfully received IP ({validIp}) from provider: {apiUrl}",validIp,apiUrl);
                         break;
                     }
                     else
