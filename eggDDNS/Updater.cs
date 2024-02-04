@@ -1,7 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using System.Xml;
-namespace NamecheapDDNSUpdater{
+namespace eggDDNS{
 class DDNSUpdater
 {
     private static readonly HttpClient HttpClient = new HttpClient();

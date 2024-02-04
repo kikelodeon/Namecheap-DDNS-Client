@@ -1,10 +1,10 @@
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
-namespace NamecheapDDNSUpdater{
-class DDNSLogger
+namespace eggDDNS{
+class Logger
 {
-    static DDNSLogger()
+    static Logger()
     {
         var customThemeStyles = new Dictionary<ConsoleThemeStyle, SystemConsoleThemeStyle>
         {

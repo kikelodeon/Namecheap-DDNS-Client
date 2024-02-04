@@ -1,18 +1,17 @@
-﻿using NamecheapDDNSUpdater;
+﻿using eggDDNS;
 
 class Program
 {
     static void Main(string[] args)
     {
         const string mutexName = "Global\\DDNSUpdaterMutex";
-
+        if (args.Length == 0 || args.Length == 1 && args[0].Equals("--help", StringComparison.OrdinalIgnoreCase))
+        {
+            DisplayHelp();
+            return;
+        }
         using (Mutex mutex = new Mutex(true, mutexName, out bool createdNew))
         {
-            if (args.Length == 0 || args.Length == 1 && args[0].Equals("--help", StringComparison.OrdinalIgnoreCase))
-            {
-                DisplayHelp();
-                return;
-            }
             if (!createdNew)
             {
                 DDNSLogger.Critical("Another instance of DDNSUpdater is already running. Exiting...");
@@ -42,7 +41,7 @@ class Program
        ╚══════════════════════════════════════════════════════════╝
 
         Usage:
-            NameCheap-DDNS-Updater /path/to/hosts
+            eggDDNS /path/to/hosts
                     
         Options:
             --help Displays this mesage.

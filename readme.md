@@ -33,7 +33,7 @@ This application is designed to update the dynamic IP address associated with yo
 ## Usage
 
 ```bash
-NameCheapDDNSClient C:\\Path\\To\\ConfigFolder
+eggDDNSClient C:\\Path\\To\\ConfigFolder
 ```
 ### Options
 

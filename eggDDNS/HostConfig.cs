@@ -1,12 +1,12 @@
 using System.Text.Json;
 
-namespace NamecheapDDNSUpdater{
-public class DDNSConfig
+namespace eggDDNS{
+public class HostConfig
 {
     private int _ttl;
     private DateTime _nextRun = DateTime.Now;
 
-    public DDNSConfig()
+    public HostConfig()
     {
         Host = string.Empty;
         Domain = string.Empty;
@@ -16,13 +16,13 @@ public class DDNSConfig
     }
     
 
-    public static DDNSConfig Read(string filePath)
+    public static HostConfig Read(string filePath)
     {
         string configJson = File.ReadAllText(filePath);
 
         try
         {
-            DDNSConfig? config = JsonSerializer.Deserialize<DDNSConfig>(configJson);
+            HostConfig? config = JsonSerializer.Deserialize<HostConfig>(configJson);
 
             if (config == null || string.IsNullOrEmpty(config.Host) || string.IsNullOrEmpty(config.Domain) ||
                 string.IsNullOrEmpty(config.Password) || config.TTL <= 0)
