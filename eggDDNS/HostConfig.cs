@@ -57,7 +57,7 @@ public class HostConfig
             int boundariesValue =  ForceBounds( value);
             if (value != boundariesValue)
             {
-                DDNSLogger.Warning("Warning: TTL value {value} is outside the allowed range [5, 60]. Clamped to {boundariesValue}.",value,boundariesValue);
+                Logger.Warning("Warning: TTL value {value} is outside the allowed range [5, 60]. Clamped to {boundariesValue}.",value,boundariesValue);
             }
             // Ensure that the value is within the specified range
             int clampedValue = ClampedToMultipleOf5(boundariesValue);
@@ -65,7 +65,7 @@ public class HostConfig
             // Log a warning if clamping occurred
             if (boundariesValue != clampedValue)
             {
-                DDNSLogger.Warning("Warning: TTL value {value} not multiple of 5. Clamped to {clampedValue}.",value,clampedValue);
+                Logger.Warning("Warning: TTL value {value} not multiple of 5. Clamped to {clampedValue}.",value,clampedValue);
             }
             _ttl = clampedValue;
         }

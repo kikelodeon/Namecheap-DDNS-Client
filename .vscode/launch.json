@@ -6,9 +6,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/eggDDNSClient/bin/Debug/net8.0/eggDDNSClient.dll",
+            "program": "${workspaceFolder}/eggDDNS/bin/Debug/net8.0/eggDDNS.dll",
             "args": ["AppData/Hosts"],
-            "cwd": "${workspaceFolder}/eggDDNSClient",
+            "cwd": "${workspaceFolder}/eggDDNS",
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "openExternally",

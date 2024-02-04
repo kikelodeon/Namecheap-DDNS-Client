@@ -1,10 +1,31 @@
-using System;
-using System.Collections.Generic;
-namespace EggAgent
+namespace eggDDNS
 {
-    class MainCommand
+    class MainCommand : Command
     {
-        static Dictionary<char, ConsoleColor> mapping = new Dictionary<char, ConsoleColor>
+        public override string[] Commands => new[] { "/m", "/main", "-m", "--main", "main" };
+
+        public override void Execute(string[] args)
+        {
+            Logger.Debug("Executing MainCommand...");
+            string[] textLines = helpMessageText.Split('\n');
+            string[] colorLines = helpMessageColors.Split('\n');
+
+            for (int j = 0; j < textLines.Length; j++)
+            {
+                for (int i = 0; i < textLines[j].Length; i++)
+                {
+                    char number = colorLines[j][i];
+                    ConsoleColor color = mapping.ContainsKey(number) ? mapping[number] : ConsoleColor.White;
+                    Console.ForegroundColor = color;
+                    Console.Write(textLines[j][i]);
+                    Console.ResetColor();
+                }
+
+                Console.WriteLine(); // Move to the next line after completing each line.
+            }
+        }
+
+        private Dictionary<char, ConsoleColor> mapping = new Dictionary<char, ConsoleColor>
         {
             ['0'] = ConsoleColor.Green,
             ['1'] = ConsoleColor.DarkGray,
@@ -24,11 +45,11 @@ namespace EggAgent
      .&&&&&&       *************    && &&&&&&&    ║   DDNS update service for namecheap domains  ║
      .&&&&&      ***************    %&&, &&&&&    ╚══════════════════════════════════════════════╝
      .&&&&     *****************    %&&&& &&&&            
-     .&&&     ****************      %&&&&& &&&           Usage:
-     .&&      ************        &&&&&.   &&&              eggDDNS /path/to/hosts
+     .&&&     ****************      %&&&&& &&&        Use --help for display a list of commands
+     .&&      ************        &&&&&.   &&&      & options.      
      .&% &.       ,***        &&&&&         &&           
-     .& &&&&&&&          (&&&&&             &&           Options: 
-     .& &(   &&&&&&  &&&&&&&&&    .****,    /&              --help Displays this mesage.
+     .& &&&&&&&          (&&&&&             &&           
+     .& &(   &&&&&&  &&&&&&&&&    .****,    /&              
      .&          &&&&&&&&&&&&&    *****,    ,&    
      .&     *        &&&&&&&&&    *****     &&    
      .&&     ****,       %&&&&    ****      &&                                            
@@ -45,7 +66,7 @@ namespace EggAgent
      0555552       0000000000000    22 2255555    588888888888888888888888888888888888888888888885
      055522      000000000000000    2222 25555    555555555555555555555555555555555555555555555555
      05522     00000000000000000    22222 2555    999999999999999999999999999999999999999999999999
-     0522    00000000000000000      222222 255    999999999999999999999999999999999999999999999999
+     0522    00000000000000000      222222 255    999999996666669999999999999999999999999999999999
      052      000000000000        222222   225    999999999999999999999999999999999999999999999999
      022 23       0000        22222         25    999999999999999999999999999999999999999999999999
      02 2222222          122222             22    999999999999999999999999999999999999999999999999
@@ -60,24 +81,5 @@ namespace EggAgent
      055555555554222           322255555557666    555555555555555555555555555555555555555555555555
      ";
 
-        public static void Execute()
-        {
-            string[] textLines = helpMessageText.Split('\n');
-            string[] colorLines = helpMessageColors.Split('\n');
-
-            for (int j = 0; j < textLines.Length; j++)
-            {
-                for (int i = 0; i < textLines[j].Length; i++)
-                {
-                    char number = colorLines[j][i];
-                    ConsoleColor color = mapping.ContainsKey(number) ? mapping[number] : ConsoleColor.White;
-                    Console.ForegroundColor = color;
-                    Console.Write(textLines[j][i]);
-                    Console.ResetColor();
-                }
-
-                Console.WriteLine(); // Move to the next line after completing each line.
-            }
-        }
     }
 }

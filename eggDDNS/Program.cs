@@ -2,57 +2,36 @@
 
 class Program
 {
+    private static readonly List<Command> Commands = new List<Command>
+    {
+        new AddHostCommand(),
+        new AddIpProviderCommand(),
+        new DisableCommand(),
+        new EnableCommand(),
+        new HelpCommand(),
+        new LogCommand(),
+        new LogPathCommand(),
+        new MainCommand(),
+        new RemoveHostCommand(),
+        new RemoveIpProviderCommand(),
+        new RestartCommand(),
+        new RunCommand(),
+        new StartCommand(),
+        new StatusCommand(),
+        new StopCommand()
+    };
+    
     static void Main(string[] args)
     {
-        const string mutexName = "Global\\DDNSUpdaterMutex";
-        if (args.Length == 0 || args.Length == 1 && args[0].Equals("--help", StringComparison.OrdinalIgnoreCase))
+        Command? requestedCommand = Commands.FirstOrDefault(x=>x.IsRequested(args));
+
+        if(requestedCommand !=null)
         {
-            DisplayHelp();
+            requestedCommand.Execute(args);
             return;
         }
-        using (Mutex mutex = new Mutex(true, mutexName, out bool createdNew))
-        {
-            if (!createdNew)
-            {
-                DDNSLogger.Critical("Another instance of DDNSUpdater is already running. Exiting...");
-                return;
-            }
 
-            string configFolderPath = args[0];
-
-            try
-            {
-                DDNSUpdater.Run(configFolderPath);
-            }
-            catch (Exception ex)
-            {
-                DDNSLogger.Critical($"Error: {ex.Message}");
-                Environment.Exit(1);
-            }
-        }
-
-        static void DisplayHelp()
-        {
-            Console.WriteLine(@"
-       ╔══════════════════════════════════════════════════════════╗
-       ║                  Namecheap DDNS Updater                  ║
-       ║══════════════════════════════════════════════════════════║
-       ║       Dynamic DNS Ip Updater for Namecheap Domains       ║
-       ╚══════════════════════════════════════════════════════════╝
-
-        Usage:
-            eggDDNS /path/to/hosts
-                    
-        Options:
-            --help Displays this mesage.
-
-       ╔══════════════════════════════════════════════════════════╗
-       ║                                              @kikelodeon ║
-       ║                               Release date: January 2024 ║
-       ╚══════════════════════════════════════════════════════════╝
-                                                          v 1.0.2
-                                                                ");
-
-        }
+        new MainCommand().Execute(args);
+        return;
     }
 }

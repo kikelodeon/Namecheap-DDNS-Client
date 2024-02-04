@@ -1,0 +1,13 @@
+[Unit]
+Description=Namecheap DDNS Updater
+After=network-online.target
+
+[Service]
+User=eggDDNS
+Group=eggDDNS
+ExecStart=eggDDNS run
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=default.target

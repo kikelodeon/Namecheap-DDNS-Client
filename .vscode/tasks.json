@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/eggDDNSClient/eggDDNSClient.csproj"
+                "${workspaceFolder}/eggDDNS/eggDDNS.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

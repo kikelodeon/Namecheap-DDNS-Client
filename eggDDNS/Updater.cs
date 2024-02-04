@@ -1,21 +1,22 @@
 using System.Net;
 using System.Text.Json;
 using System.Xml;
+
 namespace eggDDNS{
-class DDNSUpdater
+class Updater
 {
     private static readonly HttpClient HttpClient = new HttpClient();
-    public static readonly List<DDNSConfig> ConfigList = new List<DDNSConfig>();
+    public static readonly List<HostConfig> ConfigList = new List<HostConfig>();
 
     public static void Run(string configFolderPath)
     {
         try
         {
-            DDNSLogger.Info("Running...");
+            Logger.Info("Running...");
             string[] configFiles = Directory.GetFiles(configFolderPath, "*.json");
             if (configFiles.Length == 0)
             {
-                DDNSLogger.Info("No config files found in the specified folder: {configFolderPath}",configFolderPath);
+                Logger.Info("No config files found in the specified folder: {configFolderPath}",configFolderPath);
                 return;
             }
 
@@ -23,13 +24,13 @@ class DDNSUpdater
             {
                 try
                 {
-                    DDNSConfig config = DDNSConfig.Read(configFile);
+                    HostConfig config = HostConfig.Read(configFile);
                     ConfigList.Add(config);
-                    DDNSLogger.Info("Successfully added config for {Host}.{Domain}",config.Host,config.Domain);
+                    Logger.Info("Successfully added config for {Host}.{Domain}",config.Host,config.Domain);
                 }
                 catch (Exception ex)
                 {
-                    DDNSLogger.Critical("Error reading configuration from {configFile}: {ex}",configFile,ex.Message);
+                    Logger.Critical("Error reading configuration from {configFile}: {ex}",configFile,ex.Message);
                 }
             }
 
@@ -39,12 +40,12 @@ class DDNSUpdater
             }
             else
             {
-                DDNSLogger.Info("No config files to process");
+                Logger.Info("No config files to process");
             }
         }
         catch (Exception ex)
         {
-            DDNSLogger.Critical("Error: {ex}",ex.Message);
+            Logger.Critical("Error: {ex}",ex.Message);
             Environment.Exit(1);
         }
     }
@@ -53,7 +54,7 @@ class DDNSUpdater
     {
         while (true)
         {
-            DDNSLogger.Info("Checking configuration files...");
+            Logger.Info("Checking configuration files...");
             string[] providers = {
             "https://api.ipify.org/?format=json",
             "https://api.my-ip.io/v2/ip.json",
@@ -70,18 +71,18 @@ class DDNSUpdater
                     {
                         try
                         {
-                            DDNSLogger.Info("Running: {config}",config);
+                            Logger.Info("Running: {config}",config);
                             MakeHttpRequest(config, publicIp);
                         }
                         catch (Exception ex)
                         {
-                            DDNSLogger.Warning("Error processing {config}: {ex}",config,ex);
+                            Logger.Warning("Error processing {config}: {ex}",config,ex);
                         }
                         finally
                         {
                             DateTime next = config.NextRun.AddMinutes(config.TTL);
                             config.NextRun = new DateTime(next.Year,next.Month,next.Day,next.Hour,next.Minute,0);
-                            DDNSLogger.Info("Next run for {Host}.{Domain} will be at {NextRun}",config.Host,config.Domain,config.NextRun);
+                            Logger.Info("Next run for {Host}.{Domain} will be at {NextRun}",config.Host,config.Domain,config.NextRun);
                         }
                     }
                 }
@@ -102,12 +103,12 @@ class DDNSUpdater
 
             var remainingMinutes = Math.Floor(remainingTime.TotalMinutes);
             var remainingSeconds = Math.Floor(remainingTime.TotalSeconds % 60);
-            DDNSLogger.Info("Debug: {remainingMinutes} minutes and {remaininSeconds} seconds left for next update. (Updated hosts will be [{nextUpdateHostsString}])",remainingMinutes, remainingSeconds, nextUpdateHostsString);
+            Logger.Info("Debug: {remainingMinutes} minutes and {remaininSeconds} seconds left for next update. (Updated hosts will be [{nextUpdateHostsString}])",remainingMinutes, remainingSeconds, nextUpdateHostsString);
 
             Thread.Sleep((int)remainingTime.TotalMilliseconds<1000?1000:(int)remainingTime.TotalMilliseconds);
         }
     }
-    private static void ParseResponse(string response, DDNSConfig config, string ip)
+    private static void ParseResponse(string response, HostConfig config, string ip)
     {
         try
         {
@@ -119,20 +120,20 @@ class DDNSUpdater
             if (errCount > 0)
             {
                 var errorDescription = xmlDoc.SelectSingleNode("//errors/Err1")?.InnerText;
-                DDNSLogger.Warning($"{errorDescription}");
+                Logger.Warning($"{errorDescription}");
             }
             else
             {
                 config.IP = ip;
-                DDNSLogger.Info("Successfully set DDNS A+ Record on {Host}.{Domain} IP: {ip} on your namecheap.com account",config.Host, config.Domain, ip);
+                Logger.Info("Successfully set DDNS A+ Record on {Host}.{Domain} IP: {ip} on your namecheap.com account",config.Host, config.Domain, ip);
             }
         }
         catch (Exception ex)
         {
-           DDNSLogger.Critical("Error parsing response: {ex}",ex.Message);
+           Logger.Critical("Error parsing response: {ex}",ex.Message);
         }
     }
-    private static void MakeHttpRequest(DDNSConfig config, string? publicIp)
+    private static void MakeHttpRequest(HostConfig config, string? publicIp)
     {
         if (publicIp != null && publicIp != config.IP)
         {
@@ -144,7 +145,7 @@ class DDNSUpdater
         }
         else
         {
-            DDNSLogger.Info($"Config has the same IP as the actual IP, no need to update.");
+            Logger.Info($"Config has the same IP as the actual IP, no need to update.");
         }
     }
     private static string? GetPublicIp(string[] providerUrls)
@@ -166,22 +167,22 @@ class DDNSUpdater
                     if (IsValidIpAddress(result?.ip))
                     {
                         validIp = result?.ip;
-                        DDNSLogger.Info("Successfully received IP ({validIp}) from provider: {apiUrl}",validIp,apiUrl);
+                        Logger.Info("Successfully received IP ({validIp}) from provider: {apiUrl}",validIp,apiUrl);
                         break;
                     }
                     else
                     {
-                        DDNSLogger.Warning("Invalid IP format received from {apiUrl}: {result?.ip}",apiUrl,result?.ip);
+                        Logger.Warning("Invalid IP format received from {apiUrl}: {result?.ip}",apiUrl,result?.ip);
                     }
                 }
             }
             catch (OperationCanceledException)
             {
-                DDNSLogger.Warning("Timeout exceeded while getting public IP from {apiUrl}",apiUrl);
+                Logger.Warning("Timeout exceeded while getting public IP from {apiUrl}",apiUrl);
             }
             catch (Exception ex)
             {
-                DDNSLogger.Warning("Error getting public IP from {apiUrl}: {ex}",apiUrl,ex.Message);
+                Logger.Warning("Error getting public IP from {apiUrl}: {ex}",apiUrl,ex.Message);
             }
         }
 
