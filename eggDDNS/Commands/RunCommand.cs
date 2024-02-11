@@ -2,7 +2,7 @@ namespace eggDDNS
 {
     class RunCommand : Command
     {
-        public override string[] Commands => new[] { "run" };
+        public override string[] Triggers => new[] { "run" };
 
          public override void Execute(string[] args)
         {
@@ -16,11 +16,9 @@ namespace eggDDNS
                     return;
                 }
 
-                string configFolderPath = args[0];
-
                 try
                 {
-                    Updater.Run(configFolderPath);
+                    Updater.Run();
                 }
                 catch (Exception ex)
                 {

@@ -1,5 +1,5 @@
 [Unit]
-Description=Namecheap DDNS Updater
+Description=eggDDNS
 After=network-online.target
 
 [Service]

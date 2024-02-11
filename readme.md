@@ -46,7 +46,8 @@ The application loads configuration files from the specified folder path provide
 
 
 ### Config File Format
-The configuration file is a JSON file with the following structure:
+#### Host Config File
+The host configuration file is a JSON file with the following structure:
 ```json
 {
   "Host": "your-host",
@@ -72,8 +73,16 @@ Make sure to replace the placeholder values (`your-host`, `your-domain`, `your-p
   :exclamation: **Tips:**
   -  The TTL value is **ranged** from 5 to 60 minutes.
   -  Steps of 5 minutes are **clamped** for setting the TTL.
-
-
+#### IpProvider Config File
+The IpProvider configuration file is a JSON file with the following structure:
+```json
+{
+  "Name": "provider-name",
+  "Url": "provider-url",
+}
+```
+:exclamation: **Tips:**
+Expected result is simple json object {ip:"x.x.x.x}
 ## Version History
 
 - 1.0 (January 2024)

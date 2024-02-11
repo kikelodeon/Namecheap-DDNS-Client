@@ -1,12 +1,12 @@
+using System.Text;
 using Serilog;
 using Serilog.Events;
+using Serilog.Sinks.File;
 using Serilog.Sinks.SystemConsole.Themes;
-namespace eggDDNS{
-class Logger
-{
-    static Logger()
-    {
-        var customThemeStyles = new Dictionary<ConsoleThemeStyle, SystemConsoleThemeStyle>
+namespace eggDDNS
+{   
+    class Logger
+    {   static Dictionary<ConsoleThemeStyle, SystemConsoleThemeStyle> customThemeStyles = new Dictionary<ConsoleThemeStyle, SystemConsoleThemeStyle>
         {
             {
                 ConsoleThemeStyle.Text, new SystemConsoleThemeStyle
@@ -81,51 +81,76 @@ class Logger
                 }
             },
         };
-        var customTheme = new SystemConsoleTheme(customThemeStyles);
-        // Configure Serilog for console output and file logging
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console(theme: customTheme)
-            .WriteTo.File(GetLogFilePath(),restrictedToMinimumLevel:LogEventLevel.Information, rollingInterval: RollingInterval.Day)
-            .CreateLogger();
-    }
-
-    private static string GetLogOsPath()
-    {
-        if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
+        class LogFileHook: FileLifecycleHooks
         {
-            return  "/var/log"; // Linux or macOS
+            public override Stream OnFileOpened(string path, Stream underlyingStream, Encoding encoding)
+            {   
+                 lastWritedFilename =path;              
+                return base.OnFileOpened(underlyingStream, encoding);
+            }
         }
-        else
+
+      public  static string?   lastWritedFilename = null;
+
+        public static void Init()
         {
-            return  Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData); // Windows or other
+      
+            var customTheme = new SystemConsoleTheme(customThemeStyles);
+    
+            var loggerConfig = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .WriteTo.File(GetLogFilePath(), rollingInterval: RollingInterval.Day,restrictedToMinimumLevel:LogEventLevel.Verbose)
+                .WriteTo.Console(theme: customTheme)
+                .CreateLogger();
+                
+            Log.Logger = loggerConfig;
+
+            var hook = new LogFileHook();
+            var OnlyToGetFilePath = new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .WriteTo.File(GetLogFilePath(), rollingInterval: RollingInterval.Day, hooks:hook,restrictedToMinimumLevel:LogEventLevel.Verbose)
+                .CreateLogger();
+
+            OnlyToGetFilePath.Write(LogEventLevel.Verbose, "Logger has been created."); // Mensaje vacío
+    
+        }
+
+        private static string GetLogOsPath()
+        {
+            if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
+            {
+                return "/var/log"; // Linux or macOS
+            }
+            else
+            {
+                return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData); // Windows or other
+            }
+        }
+        private static string GetLogFilePath()
+        {
+            string osSpecificDirectory = GetLogOsPath();
+            string logDirectory = Path.Combine(osSpecificDirectory, Constants.ApplicationName);
+            Directory.CreateDirectory(logDirectory);
+            return Path.Combine(logDirectory, Constants.ApplicationName + ".log");
+        }
+        public static void Info(string message, params object?[] propertyValues)
+        {
+            Log.Information(message, propertyValues);
+        }
+
+        public static void Warning(string message, params object?[] propertyValues)
+        {
+            Log.Warning(message, propertyValues);
+        }
+
+        public static void Debug(string message, params object?[] propertyValues)
+        {
+            Log.Debug(message, propertyValues);
+        }
+
+        public static void Critical(string message, params object?[] propertyValues)
+        {
+            Log.Error(message, propertyValues);
         }
     }
-    private static string GetLogFilePath()
-    {
-        string osSpecificDirectory = GetLogOsPath();
-        string logDirectory = Path.Combine(osSpecificDirectory, Constants.ApplicationName);
-        Directory.CreateDirectory(logDirectory);
-        return Path.Combine(logDirectory, Constants.ApplicationName + ".log");
-    }
-
-    public static void Info(string message, params object?[] propertyValues)
-    {
-        Log.Information(message, propertyValues);
-    }
-
-    public static void Warning(string message, params object?[] propertyValues)
-    {
-        Log.Warning(message, propertyValues);
-    }
-
-    public static void Debug(string message, params object?[] propertyValues)
-    {
-        Log.Debug(message, propertyValues);
-    }
-
-    public static void Critical(string message, params object?[] propertyValues)
-    {
-        Log.Error(message, propertyValues);
-    }
-}
 }

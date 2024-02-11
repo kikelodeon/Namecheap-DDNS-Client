@@ -1,9 +1,11 @@
 GROUP_NAME = egg
 APP_NAME = eggDDNS
 INSTALL_DIR = /opt/$(APP_NAME)
+APPDATA_DIR = /etc/$(APP_NAME)
 SERVICE_DIR = /etc/systemd/system
-
+# Folders/files to be moved.
 SERVICE_FILE = $(INSTALL_DIR)/$(APP_NAME).service
+APPDATA_FOLDER = $(INSTALL_DIR)/AppData
 
 install:
 	# Ask for root password at the beginning
@@ -26,8 +28,14 @@ install:
 	@echo "Copying files..."; 
 	@sudo cp -r $(CURDIR)/* $(INSTALL_DIR)/
 
-	@echo "Copying service file to $(SERVICE_DIR)...";
-	@sudo cp -f $(SERVICE_FILE) $(SERVICE_DIR)/
+	@echo "Moving service file to $(SERVICE_DIR)...";
+	@sudo mv $(SERVICE_FILE) $(SERVICE_DIR)/
+
+	@echo "Creating application data directory..."; 
+	sudo mkdir -p $(APPDATA_DIR)
+
+	@echo "Moving example configs to $(APPDATA_DIR)...";
+	@sudo mv $(APPDATA_FOLDER) $(APPDATA_DIR)/
 
 	@echo "Creating symlink...";
 	@sudo ln -s $(INSTALL_DIR)/$(APP_NAME) /usr/local/bin/$(APP_NAME)

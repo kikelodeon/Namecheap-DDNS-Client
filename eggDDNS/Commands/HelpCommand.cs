@@ -2,7 +2,7 @@ namespace eggDDNS
 {
     class HelpCommand : Command
     {
-        public override string[] Commands => new[] { "--help", "h", "help", "/help", "/h", "-h", "?" };
+        public override string[] Triggers => new[] { "--help", "h", "help", "/help", "/h", "-h", "?" };
 
         public override void Execute(string[] args)
         {
@@ -58,20 +58,13 @@ namespace eggDDNS
         stop                    Stop service
         status                  Display service status         
         main                    Displays the main menu.        
-        list-host               Lists the loaded hosts in the config folder.
-        add-host                Add host to hosts config folder.
-                                > Example: eggDDNS --add-host /path/to/file.json
-        remove-host             Remove host from hosts config folder.
-                                > Example: eggDDNS --remove-host /path/to/file.json
-        add-ip-provider         Add public IP provider.
-                                > Example: eggDDNS --add-ip-provider http://example.com/api/ip
-        remove-ip-provider      Remove public IP provider.
-                                > Example: eggDDNS --remove-ip-provider http://example.com/api/ip
+        list-hosts              Lists the loaded hosts in the config folder.
+        list-ip-providers       Lists the loaded ip providers in the config folder.
 
         Logging:
-        log                   Displays log. (use -t for tail)
-        log-path              Output the log filepath
-        help                  Displays this message.
+        log                     Displays log. (use -t for tail)
+        log-path                Output the log filepath
+        help                    Displays this message.
      ";
         private const string helpMessageColors = @"
 2
@@ -90,13 +83,7 @@ namespace eggDDNS
         6                    9
         6                    9
         6                    9
-                                7          1
         6                    9
-                                7          1
-        6                    9
-                                7          1
-        6                    9
-                                7          1
 
 2
         6                    9

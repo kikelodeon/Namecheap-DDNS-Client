@@ -2,7 +2,7 @@ namespace eggDDNS
 {
     class MainCommand : Command
     {
-        public override string[] Commands => new[] { "/m", "/main", "-m", "--main", "main" };
+        public override string[] Triggers => new[] { "/m", "/main", "-m", "--main", "main" };
 
         public override void Execute(string[] args)
         {
