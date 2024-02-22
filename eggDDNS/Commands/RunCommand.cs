@@ -7,7 +7,7 @@ namespace eggDDNS
          public override void Execute(string[] args)
         {
             Logger.Debug("Executing RunCommand...");
-            const string mutexName = "Global\\DDNSUpdaterMutex";
+            const string mutexName = "Global\\eggDDDNS\\Run";
             using (Mutex mutex = new Mutex(true, mutexName, out bool createdNew))
             {
                 if (!createdNew)
